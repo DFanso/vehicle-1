@@ -23,7 +23,11 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**", "/api/health").permitAll()
+                .requestMatchers(
+                    "/api/auth/**",
+                    "/api/health",
+                    "/api/vehicles/**"  // Making all vehicle endpoints public
+                ).permitAll()
                 .anyRequest().authenticated()
             )
             .sessionManagement(session -> session
