@@ -32,7 +32,7 @@ INSERT INTO vehicles (
     32000.00,
     8,
     'The Toyota RAV4 is a compact crossover SUV with excellent fuel economy and reliability.',
-    'https://images.unsplash.com/photo-1581362716668-d6cf4a8dcb8e',
+    'https://hips.hearstapps.com/hmg-prod/images/2025-toyota-rav4-101-6707e09a230c3.jpg',
     'SUV',
     'HYBRID'
 ),

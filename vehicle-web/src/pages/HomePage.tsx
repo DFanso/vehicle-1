@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import VehicleCard from '../components/VehicleCard';
 import VehicleFilter from '../components/VehicleFilter';
+import axios from 'axios';
 
 interface Vehicle {
   id: number;
@@ -21,16 +22,60 @@ interface FilterState {
   maxPrice: string;
 }
 
-// Uncomment this when needed for API calls
-// const API_BASE_URL = 'http://localhost:8080';
+interface ApiResponse {
+  content: Vehicle[];
+  totalElements: number;
+  totalPages: number;
+  size: number;
+  number: number;
+}
+
+const API_BASE_URL = 'http://localhost:8080';
 
 const HomePage = () => {
-  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [filteredVehicles, setFilteredVehicles] = useState<Vehicle[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [page, setPage] = useState<number>(0);
+  const [totalPages, setTotalPages] = useState<number>(0);
   
-  // Mock data for initial development
+  const fetchVehicles = async (filters: FilterState = {} as FilterState, pageNum: number = 0) => {
+    setLoading(true);
+    
+    try {
+      const params = new URLSearchParams();
+      params.append('page', pageNum.toString());
+      params.append('size', '10');
+      params.append('sortBy', 'price');
+      params.append('sortDir', 'asc');
+      
+      if (filters.brand) params.append('brand', filters.brand);
+      if (filters.type) params.append('type', filters.type);
+      if (filters.fuelType) params.append('fuelType', filters.fuelType);
+      if (filters.minPrice) params.append('minPrice', filters.minPrice);
+      if (filters.maxPrice) params.append('maxPrice', filters.maxPrice);
+      
+      const response = await axios.get<ApiResponse>(`${API_BASE_URL}/api/vehicles`, { params });
+      
+      setFilteredVehicles(response.data.content);
+      setTotalPages(response.data.totalPages);
+      setPage(response.data.number);
+      setError(null);
+    } catch (err) {
+      console.error('Error fetching vehicles:', err);
+      setError('Failed to load vehicles. Please try again later.');
+      // Fallback to mock data in case the API is not available
+      setFilteredVehicles(mockVehicles);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  useEffect(() => {
+    fetchVehicles();
+  }, []);
+  
+  // Mock data for fallback if API is unavailable
   const mockVehicles: Vehicle[] = [
     {
       id: 1,
@@ -94,57 +139,15 @@ const HomePage = () => {
     },
   ];
   
-  useEffect(() => {
-    // Simulating API fetch with mock data for now
-    // In a real app, you would fetch from actual API:
-    // fetch(`${API_BASE_URL}/api/vehicles`)
-    //   .then(response => response.json())
-    //   .then(data => {
-    //     setVehicles(data.content);
-    //     setFilteredVehicles(data.content);
-    //     setLoading(false);
-    //   })
-    //   .catch(err => {
-    //     setError('Failed to load vehicles. Please try again later.');
-    //     setLoading(false);
-    //   });
-    
-    // Simulating potential API error
-    if (Math.random() > 0.95) {
-      setError('Failed to load vehicles. Please try again later.');
-    } else {
-      setTimeout(() => {
-        setVehicles(mockVehicles);
-        setFilteredVehicles(mockVehicles);
-        setLoading(false);
-      }, 500);
-    }
-  }, []);
-  
   const handleFilterChange = (filters: FilterState) => {
-    let filtered = [...vehicles];
-    
-    if (filters.brand) {
-      filtered = filtered.filter(vehicle => vehicle.brand === filters.brand);
+    fetchVehicles(filters);
+  };
+  
+  const handlePageChange = (newPage: number) => {
+    if (newPage >= 0 && newPage < totalPages) {
+      setPage(newPage);
+      fetchVehicles({} as FilterState, newPage);
     }
-    
-    if (filters.type) {
-      filtered = filtered.filter(vehicle => vehicle.type === filters.type);
-    }
-    
-    if (filters.fuelType) {
-      filtered = filtered.filter(vehicle => vehicle.fuelType === filters.fuelType);
-    }
-    
-    if (filters.minPrice) {
-      filtered = filtered.filter(vehicle => vehicle.price >= parseInt(filters.minPrice));
-    }
-    
-    if (filters.maxPrice) {
-      filtered = filtered.filter(vehicle => vehicle.price <= parseInt(filters.maxPrice));
-    }
-    
-    setFilteredVehicles(filtered);
   };
   
   return (
@@ -202,11 +205,54 @@ const HomePage = () => {
                   <p className="mt-2 text-neutral-600">Try adjusting your filters to find what you're looking for.</p>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {filteredVehicles.map(vehicle => (
-                    <VehicleCard key={vehicle.id} {...vehicle} />
-                  ))}
-                </div>
+                <>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {filteredVehicles.map(vehicle => (
+                      <VehicleCard key={vehicle.id} {...vehicle} />
+                    ))}
+                  </div>
+                  
+                  {/* Pagination */}
+                  {totalPages > 1 && (
+                    <div className="mt-8 flex justify-center">
+                      <nav className="inline-flex rounded-md shadow">
+                        <button
+                          onClick={() => handlePageChange(page - 1)}
+                          disabled={page === 0}
+                          className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-neutral-300 bg-white text-sm font-medium text-neutral-500 hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          <span className="sr-only">Previous</span>
+                          <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
+                          </svg>
+                        </button>
+                        
+                        {[...Array(totalPages)].map((_, i) => (
+                          <button
+                            key={i}
+                            onClick={() => handlePageChange(i)}
+                            className={`relative inline-flex items-center px-4 py-2 border border-neutral-300 bg-white text-sm font-medium ${
+                              page === i ? 'text-blue-600 bg-blue-50' : 'text-neutral-700 hover:bg-neutral-50'
+                            }`}
+                          >
+                            {i + 1}
+                          </button>
+                        ))}
+                        
+                        <button
+                          onClick={() => handlePageChange(page + 1)}
+                          disabled={page === totalPages - 1}
+                          className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-neutral-300 bg-white text-sm font-medium text-neutral-500 hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          <span className="sr-only">Next</span>
+                          <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                          </svg>
+                        </button>
+                      </nav>
+                    </div>
+                  )}
+                </>
               )}
             </div>
           </div>
