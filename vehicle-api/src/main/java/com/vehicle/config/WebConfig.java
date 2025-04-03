@@ -8,6 +8,9 @@ import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.util.Arrays;
+import java.util.Collections;
+
 /**
  * Configuration class for web-related settings including CORS
  */
@@ -20,9 +23,10 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:5173") // Vite's default dev server port
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowedOriginPatterns("*") // More flexible than allowedOrigins
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH", "HEAD")
                 .allowedHeaders("*")
+                .exposedHeaders("Authorization")
                 .allowCredentials(true)
                 .maxAge(3600); // 1 hour
     }
@@ -35,17 +39,20 @@ public class WebConfig implements WebMvcConfigurer {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         
-        // Allow all origins for development 
-        config.addAllowedOrigin("http://localhost:5173"); // Vite's default dev server port
+        // Allow requests from any origin in development
+        config.setAllowedOriginPatterns(Collections.singletonList("*"));
         
-        // Allow all HTTP methods
-        config.addAllowedMethod("*");
+        // Allow credentials like cookies, authorization headers
+        config.setAllowCredentials(true);
+        
+        // Allow common HTTP methods including OPTIONS for preflight
+        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH", "HEAD"));
         
         // Allow all headers
-        config.addAllowedHeader("*");
+        config.setAllowedHeaders(Collections.singletonList("*"));
         
-        // Allow cookies and authentication headers
-        config.setAllowCredentials(true);
+        // Expose the Authorization header to the client
+        config.setExposedHeaders(Arrays.asList("Authorization"));
         
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
