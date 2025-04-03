@@ -10,6 +10,7 @@ import com.vehicle.repository.VehicleRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -74,9 +75,19 @@ public class OrderService {
         return mapToOrderResponse(savedOrder);
     }
 
+    @Transactional
     public Page<OrderResponse> getUserOrders(User user, Pageable pageable) {
-        return orderRepository.findByUserOrderByCreatedAtDesc(user, pageable)
-                .map(this::mapToOrderResponse);
+        List<Order> orders = orderRepository.findByUserWithItems(user);
+        
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), orders.size());
+        
+        List<OrderResponse> orderResponses = orders.subList(start, end)
+                .stream()
+                .map(this::mapToOrderResponse)
+                .collect(Collectors.toList());
+                
+        return new PageImpl<>(orderResponses, pageable, orders.size());
     }
 
     private OrderResponse mapToOrderResponse(Order order) {

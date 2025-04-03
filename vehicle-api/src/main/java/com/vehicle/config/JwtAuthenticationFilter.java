@@ -38,7 +38,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
         try {
-            if (request.getServletPath().contains("/api/auth")) {
+            String requestPath = request.getServletPath();
+            if (requestPath.equals("/api/auth/login") || requestPath.equals("/api/auth/signup")) {
                 filterChain.doFilter(request, response);
                 return;
             }
@@ -73,7 +74,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
             filterChain.doFilter(request, response);
         } catch (Exception e) {
-            sendErrorResponse(response, HttpStatus.UNAUTHORIZED, "Authentication failed");
+            sendErrorResponse(response, HttpStatus.UNAUTHORIZED, "Authentication failed: " + e.getMessage());
         }
     }
 
