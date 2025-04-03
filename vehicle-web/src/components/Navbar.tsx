@@ -1,10 +1,14 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { useCart } from '../contexts/CartContext';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { user, isAuthenticated, logout } = useAuth();
+  const { getItemCount } = useCart();
+  
+  const cartItemCount = getItemCount();
   
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -39,6 +43,17 @@ const Navbar = () => {
             </div>
           </div>
           <div className="hidden sm:ml-6 sm:flex sm:items-center">
+            <Link to="/cart" className="text-neutral-500 hover:text-neutral-700 px-3 py-2 text-sm font-medium relative mr-3">
+              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+              </svg>
+              {cartItemCount > 0 && (
+                <span className="absolute -top-2 -right-2 inline-flex items-center justify-center h-5 w-5 text-xs font-bold leading-none text-white bg-blue-600 rounded-full">
+                  {cartItemCount}
+                </span>
+              )}
+            </Link>
+            
             {isAuthenticated ? (
               <>
                 <div className="flex items-center mr-4">
@@ -73,6 +88,17 @@ const Navbar = () => {
             )}
           </div>
           <div className="flex items-center sm:hidden">
+            <Link to="/cart" className="text-neutral-500 hover:text-neutral-700 px-2 py-2 relative mr-4">
+              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+              </svg>
+              {cartItemCount > 0 && (
+                <span className="absolute -top-2 -right-2 inline-flex items-center justify-center h-5 w-5 text-xs font-bold leading-none text-white bg-blue-600 rounded-full">
+                  {cartItemCount}
+                </span>
+              )}
+            </Link>
+            
             <button 
               onClick={toggleMenu}
               className="inline-flex items-center justify-center p-2 rounded-md text-neutral-400 hover:text-neutral-500 hover:bg-neutral-100"
@@ -130,6 +156,14 @@ const Navbar = () => {
                   <Link to="/profile" className="block px-4 py-2 text-base font-medium text-neutral-500 hover:text-neutral-800 hover:bg-neutral-100">
                     My Profile
                   </Link>
+                  <Link to="/cart" className="block px-4 py-2 text-base font-medium text-neutral-500 hover:text-neutral-800 hover:bg-neutral-100 flex items-center">
+                    Cart
+                    {cartItemCount > 0 && (
+                      <span className="ml-2 inline-flex items-center justify-center h-5 w-5 text-xs font-bold leading-none text-white bg-blue-600 rounded-full">
+                        {cartItemCount}
+                      </span>
+                    )}
+                  </Link>
                   <button
                     onClick={handleLogout}
                     className="block w-full text-left px-4 py-2 text-base font-medium text-neutral-500 hover:text-neutral-800 hover:bg-neutral-100"
@@ -151,6 +185,14 @@ const Navbar = () => {
                   </Link>
                   <Link to="/signup" className="block px-4 py-2 text-base font-medium text-neutral-500 hover:text-neutral-800 hover:bg-neutral-100">
                     Sign Up
+                  </Link>
+                  <Link to="/cart" className="block px-4 py-2 text-base font-medium text-neutral-500 hover:text-neutral-800 hover:bg-neutral-100 flex items-center">
+                    Cart
+                    {cartItemCount > 0 && (
+                      <span className="ml-2 inline-flex items-center justify-center h-5 w-5 text-xs font-bold leading-none text-white bg-blue-600 rounded-full">
+                        {cartItemCount}
+                      </span>
+                    )}
                   </Link>
                 </div>
               </div>

@@ -219,19 +219,6 @@ INSERT INTO vehicles (
     'ELECTRIC'
 ),
 (
-    'Ford Mustang',
-    'Mustang GT',
-    'Ford',
-    2024,
-    'Blue',
-    55000.00,
-    5,
-    'The Ford Mustang GT is an iconic American muscle car with powerful V8 engine and aggressive styling.',
-    'https://images.unsplash.com/photo-1583121274602-3e2820c69888',
-    'COUPE',
-    'PETROL'
-),
-(
     'Rivian R1T',
     'R1T',
     'Rivian',
