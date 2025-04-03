@@ -140,6 +140,29 @@
 			]
 		},
 		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Get Profile",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/users/profile",
+							"host": ["{{base_url}}"],
+							"path": ["api", "users", "profile"]
+						},
+						"description": "Get user profile information (requires authentication)"
+					}
+				}
+			]
+		},
+		{
 			"name": "Vehicles",
 			"item": [
 				{
@@ -231,6 +254,10 @@
 			"key": "base_url",
 			"value": "http://localhost:8080",
 			"type": "string"
+		},
+		{
+			"key": "jwt_token",
+			"value": "your_jwt_token_here"
 		}
 	]
 }
