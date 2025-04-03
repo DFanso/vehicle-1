@@ -64,8 +64,6 @@ const HomePage = () => {
     } catch (err) {
       console.error('Error fetching vehicles:', err);
       setError('Failed to load vehicles. Please try again later.');
-      // Fallback to mock data in case the API is not available
-      setFilteredVehicles(mockVehicles);
     } finally {
       setLoading(false);
     }
@@ -75,69 +73,7 @@ const HomePage = () => {
     fetchVehicles();
   }, []);
   
-  // Mock data for fallback if API is unavailable
-  const mockVehicles: Vehicle[] = [
-    {
-      id: 1,
-      name: "Model 3 Long Range",
-      brand: "Tesla",
-      model: "Model 3",
-      price: 45990,
-      type: "SEDAN",
-      fuelType: "ELECTRIC",
-      imageUrl: "https://images.unsplash.com/photo-1562911791-c7a97b729ec5?q=80&w=1000"
-    },
-    {
-      id: 2,
-      name: "Civic Touring",
-      brand: "Honda",
-      model: "Civic",
-      price: 28500,
-      type: "SEDAN",
-      fuelType: "PETROL",
-      imageUrl: "https://images.unsplash.com/photo-1606152557139-1b66ff873b9e?q=80&w=1000"
-    },
-    {
-      id: 3,
-      name: "F-150 Raptor",
-      brand: "Ford",
-      model: "F-150",
-      price: 69995,
-      type: "TRUCK",
-      fuelType: "PETROL",
-      imageUrl: "https://images.unsplash.com/photo-1583267746897-2cf415887172?q=80&w=1000"
-    },
-    {
-      id: 4,
-      name: "X5 xDrive40i",
-      brand: "BMW",
-      model: "X5",
-      price: 62500,
-      type: "SUV",
-      fuelType: "HYBRID",
-      imageUrl: "https://images.unsplash.com/photo-1556189250-72ba954cfc2b?q=80&w=1000"
-    },
-    {
-      id: 5,
-      name: "Q5 Premium",
-      brand: "Audi",
-      model: "Q5",
-      price: 44800,
-      type: "SUV",
-      fuelType: "DIESEL",
-      imageUrl: "https://images.unsplash.com/photo-1606222193247-4cdb176986ff?q=80&w=1000"
-    },
-    {
-      id: 6,
-      name: "Corolla LE",
-      brand: "Toyota",
-      model: "Corolla",
-      price: 21550,
-      type: "SEDAN",
-      fuelType: "PETROL",
-      imageUrl: "https://images.unsplash.com/photo-1623869675781-80aa31012a5a?q=80&w=1000"
-    },
-  ];
+  
   
   const handleFilterChange = (filters: FilterState) => {
     fetchVehicles(filters);

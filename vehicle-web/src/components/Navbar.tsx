@@ -1,11 +1,18 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { user, isAuthenticated, logout } = useAuth();
   
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+  };
+
+  const handleLogout = () => {
+    logout();
+    setIsMenuOpen(false);
   };
 
   return (
@@ -32,12 +39,38 @@ const Navbar = () => {
             </div>
           </div>
           <div className="hidden sm:ml-6 sm:flex sm:items-center">
-            <Link to="/login" className="text-blue-600 hover:text-blue-700 px-3 py-2 text-sm font-medium">
-              Login
-            </Link>
-            <Link to="/signup" className="ml-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium">
-              Sign Up
-            </Link>
+            {isAuthenticated ? (
+              <>
+                <div className="flex items-center mr-4">
+                  <span className="inline-flex items-center justify-center h-8 w-8 rounded-full bg-blue-100">
+                    <span className="text-sm font-medium leading-none text-blue-700">
+                      {user?.firstName.charAt(0)}{user?.lastName.charAt(0)}
+                    </span>
+                  </span>
+                  <span className="ml-2 text-sm font-medium text-neutral-700">
+                    {user?.firstName} {user?.lastName}
+                  </span>
+                </div>
+                <Link to="/profile" className="text-blue-600 hover:text-blue-700 px-3 py-2 text-sm font-medium">
+                  My Profile
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="ml-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <Link to="/login" className="text-blue-600 hover:text-blue-700 px-3 py-2 text-sm font-medium">
+                  Login
+                </Link>
+                <Link to="/signup" className="ml-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium">
+                  Sign Up
+                </Link>
+              </>
+            )}
           </div>
           <div className="flex items-center sm:hidden">
             <button 
@@ -78,24 +111,50 @@ const Navbar = () => {
             </Link>
           </div>
           <div className="pt-4 pb-3 border-t border-neutral-200">
-            <div className="flex items-center px-4">
-              <div className="flex-shrink-0">
-                <svg className="h-10 w-10 text-neutral-300" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
-                </svg>
+            {isAuthenticated && user ? (
+              <div>
+                <div className="flex items-center px-4">
+                  <div className="flex-shrink-0">
+                    <div className="inline-flex items-center justify-center h-10 w-10 rounded-full bg-blue-100">
+                      <span className="text-sm font-medium leading-none text-blue-700">
+                        {user.firstName.charAt(0)}{user.lastName.charAt(0)}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="ml-3">
+                    <div className="text-base font-medium text-neutral-800">{user.firstName} {user.lastName}</div>
+                    <div className="text-sm font-medium text-neutral-500">{user.email}</div>
+                  </div>
+                </div>
+                <div className="mt-3 space-y-1">
+                  <Link to="/profile" className="block px-4 py-2 text-base font-medium text-neutral-500 hover:text-neutral-800 hover:bg-neutral-100">
+                    My Profile
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="block w-full text-left px-4 py-2 text-base font-medium text-neutral-500 hover:text-neutral-800 hover:bg-neutral-100"
+                  >
+                    Logout
+                  </button>
+                </div>
               </div>
-              <div className="ml-3">
-                <div className="text-base font-medium text-neutral-800">Guest User</div>
+            ) : (
+              <div className="flex items-center px-4">
+                <div className="flex-shrink-0">
+                  <svg className="h-10 w-10 text-neutral-300" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+                  </svg>
+                </div>
+                <div className="ml-3 space-y-1">
+                  <Link to="/login" className="block px-4 py-2 text-base font-medium text-neutral-500 hover:text-neutral-800 hover:bg-neutral-100">
+                    Login
+                  </Link>
+                  <Link to="/signup" className="block px-4 py-2 text-base font-medium text-neutral-500 hover:text-neutral-800 hover:bg-neutral-100">
+                    Sign Up
+                  </Link>
+                </div>
               </div>
-            </div>
-            <div className="mt-3 space-y-1">
-              <Link to="/login" className="block px-4 py-2 text-base font-medium text-neutral-500 hover:text-neutral-800 hover:bg-neutral-100">
-                Login
-              </Link>
-              <Link to="/signup" className="block px-4 py-2 text-base font-medium text-neutral-500 hover:text-neutral-800 hover:bg-neutral-100">
-                Sign Up
-              </Link>
-            </div>
+            )}
           </div>
         </div>
       )}
