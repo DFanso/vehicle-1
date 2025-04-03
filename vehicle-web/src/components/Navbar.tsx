@@ -69,6 +69,9 @@ const Navbar = () => {
                 <Link to="/profile" className="text-blue-600 hover:text-blue-700 px-3 py-2 text-sm font-medium">
                   My Profile
                 </Link>
+                <Link to="/order-history" className="text-blue-600 hover:text-blue-700 px-3 py-2 text-sm font-medium">
+                  Orders
+                </Link>
                 <button
                   onClick={handleLogout}
                   className="ml-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium"
@@ -155,6 +158,9 @@ const Navbar = () => {
                 <div className="mt-3 space-y-1">
                   <Link to="/profile" className="block px-4 py-2 text-base font-medium text-neutral-500 hover:text-neutral-800 hover:bg-neutral-100">
                     My Profile
+                  </Link>
+                  <Link to="/order-history" className="block px-4 py-2 text-base font-medium text-neutral-500 hover:text-neutral-800 hover:bg-neutral-100">
+                    Order History
                   </Link>
                   <Link to="/cart" className="block px-4 py-2 text-base font-medium text-neutral-500 hover:text-neutral-800 hover:bg-neutral-100 flex items-center">
                     Cart

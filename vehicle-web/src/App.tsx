@@ -9,6 +9,7 @@ import ProfilePage from './pages/ProfilePage';
 import CartPage from './pages/CartPage';
 import CheckoutPage from './pages/CheckoutPage';
 import OrderSuccessPage from './pages/OrderSuccessPage';
+import OrderHistoryPage from './pages/OrderHistoryPage';
 import { AuthProvider } from './contexts/AuthContext';
 import { CartProvider } from './contexts/CartContext';
 
@@ -28,6 +29,7 @@ function App() {
                 <Route path="/cart" element={<CartPage />} />
                 <Route path="/checkout" element={<CheckoutPage />} />
                 <Route path="/order-success" element={<OrderSuccessPage />} />
+                <Route path="/order-history" element={<OrderHistoryPage />} />
                 {/* Add more routes as needed */}
                 {/* <Route path="/vehicles" element={<VehiclesPage />} /> */}
                 {/* <Route path="/vehicles/:id" element={<VehicleDetailPage />} /> */}

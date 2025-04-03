@@ -41,10 +41,10 @@ const OrderSuccessPage = () => {
                     Continue Shopping
                   </Link>
                   <Link 
-                    to="/"
+                    to="/order-history"
                     className="inline-flex justify-center items-center px-4 py-2 border border-neutral-300 text-sm font-medium rounded-md text-neutral-700 bg-white hover:bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                   >
-                    View Order Status
+                    View Order History
                   </Link>
                 </div>
               </div>
